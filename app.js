@@ -5,6 +5,7 @@ let padding = (square_size - checker_size)/2;
 
 let selected_checker = null;
 let whites = [], blacks = [];
+let previous_act = {actor: 'black', destroyed_one: false};
 
 function create_field() {
     let r = '';
@@ -54,8 +55,6 @@ Checker.prototype.set_image = function() {
     return i;
 }
 
-let rules_on = false;
-
 function get_checker_at(r,c) {
     for (let e of whites.concat(blacks)) {
         if (e.row == r && e.column == c) return e;
@@ -69,6 +68,9 @@ function is_occupied(r,c) {
 
 Checker.prototype.become_damka = function() {
     this.is_damka = true;
+    setTimeout( () => {
+        this.img.src = this.team+'_queen.png';
+    }, 400);
 }
 
 Checker.prototype.destroy = function() {
@@ -79,11 +81,13 @@ Checker.prototype.destroy = function() {
 
 Checker.prototype.pos = function(r, c) {
     if (rules_on) {
+        if (previous_act.actor == this.team && !previous_act.destroyed_one) return;
+
         let r_way = r > this.row ? 1: -1;
         let c_way = c > this.column ? 1: -1;
         let len = Math.abs(r - this.row);
 
-        const goes_backwards = this.team == 'white' && r_way < 0 || this.team == 'black' && r_way > 0;
+        const goes_backwards = this.team == 'black' && r_way < 0 || this.team == 'white' && r_way > 0;
         if (Math.abs(r - this.row) != Math.abs(c - this.column)
         || is_occupied(r,c)
         || !this.is_damka && len > 2
@@ -100,9 +104,23 @@ Checker.prototype.pos = function(r, c) {
         for (let e of checkers_on_the_way)
             if (e.team == this.team) return;
 
-        if (checkers_on_the_way.length == 1) checkers_on_the_way[0].destroy();
         if (!this.is_damka && checkers_on_the_way.length == 0) {
             if (goes_backwards || len == 2) return;
+        }
+
+        if (previous_act.actor == this.team && checkers_on_the_way.length != 1) return;
+
+        if (checkers_on_the_way.length == 1) {
+            checkers_on_the_way[0].destroy();
+            previous_act.destroyed_one = true;
+        }
+        else previous_act.destroyed_one = false;
+
+        previous_act.actor = this.team;
+        if (whites.length == 0 || blacks.length == 0) {
+            setTimeout( () => {
+                alert("The " + this.team + "s win. Buahahaha");
+            }, 500);
         }
     }
 
@@ -111,16 +129,16 @@ Checker.prototype.pos = function(r, c) {
     
     change_image_loc(this.img, r, c);
 
-    if (this.team == 'white' && r == row_length - 1
-    || this.team == 'black' && r == 0)
+    if (this.team == 'black' && r == row_length - 1
+    || this.team == 'white' && r == 0)
         this.become_damka();
 }
 
 function fill_field() {
     for (let i=0; i < row_length/2-1; i++) {
         for (let k=0; k < row_length; k=k+2) {
-            whites.push(new Checker('white', i, k+i%2));
-            blacks.push(new Checker('black', row_length-1-i, k+(i+1)%2));
+            blacks.push(new Checker('black', i, k+i%2));
+            whites.push(new Checker('white', row_length-1-i, k+(i+1)%2));
         }
     }
 }
