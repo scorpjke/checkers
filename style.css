@@ -1,0 +1,24 @@
+:root {
+	--field-size: 800px;
+}
+
+#field {
+	width: var(--field-size);
+	height: var(--field-size);
+	border: 1px solid hsl(32, 73%, 28%);
+	position: relative;
+}
+
+#field > div > div {
+	float: left;
+}
+
+#field > img {
+	transition: top 0.5s, left 0.5s;
+	position: absolute;
+}
+
+#field > div:nth-child(even) > div:nth-child(even),
+#field > div:nth-child(odd) > div:nth-child(odd) {
+	background-color: rgb(51, 24, 5);
+}
