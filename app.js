@@ -1,4 +1,4 @@
-const row_length = 4;
+const row_length = 8;
 let square_size = $('#field').css('width').slice(0, -2) / row_length;
 let checker_size = square_size*0.85;
 let padding = (square_size - checker_size)/2;
