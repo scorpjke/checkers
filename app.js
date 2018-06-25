@@ -23,7 +23,7 @@ function create_field() {
         if (selected_checker !== null) {
             w = this.id.toString().slice(2).split('-');
             selected_checker.pos(parseInt(w[0]),parseInt(w[1]));
-            selected_checker = null;
+            //selected_checker = null;
         }
     });
 }
@@ -86,7 +86,7 @@ Checker.prototype.pos = function(r, c) {
         const goes_backwards = this.team == 'white' && r_way < 0 || this.team == 'black' && r_way > 0;
         if (Math.abs(r - this.row) != Math.abs(c - this.column)
         || is_occupied(r,c)
-        || !this.is_damka && (len > 2 || goes_backwards)
+        || !this.is_damka && len > 2
         ) return;
 
         let checkers_on_the_way = [];
@@ -101,7 +101,9 @@ Checker.prototype.pos = function(r, c) {
             if (e.team == this.team) return;
 
         if (checkers_on_the_way.length == 1) checkers_on_the_way[0].destroy();
-        if (!this.is_damka && checkers_on_the_way.length == 0 && len == 2) return;
+        if (!this.is_damka && checkers_on_the_way.length == 0) {
+            if (goes_backwards || len == 2) return;
+        }
     }
 
     this.row = r;
