@@ -1,11 +1,11 @@
-const row_length = 8;
+const row_length = 4;
 let square_size = $('#field').css('width').slice(0, -2) / row_length;
 let checker_size = square_size*0.85;
 let padding = (square_size - checker_size)/2;
 
-let selected_checker = null;
-let whites = [], blacks = [];
-let previous_act = {actor: 'black', destroyed_one: false};
+let selected_checker;
+let whites, blacks;
+let previous_act;
 
 function create_field() {
     let r = '';
@@ -24,7 +24,6 @@ function create_field() {
         if (selected_checker !== null) {
             w = this.id.toString().slice(2).split('-');
             selected_checker.pos(parseInt(w[0]),parseInt(w[1]));
-            //selected_checker = null;
         }
     });
 }
@@ -69,8 +68,9 @@ function is_occupied(r,c) {
 Checker.prototype.become_damka = function() {
     this.is_damka = true;
     setTimeout( () => {
+        new Audio("vdamkah.mp3").play();
         this.img.src = this.team+'_queen.png';
-    }, 400);
+    }, 600);
 }
 
 Checker.prototype.destroy = function() {
@@ -119,7 +119,8 @@ Checker.prototype.pos = function(r, c) {
         previous_act.actor = this.team;
         if (whites.length == 0 || blacks.length == 0) {
             setTimeout( () => {
-                alert("The " + this.team + "s win. Buahahaha");
+                new Audio(this.team+"_win.mp3").play();
+                //alert("The " + this.team + "s win. Buahahaha");
             }, 500);
         }
     }
@@ -144,8 +145,13 @@ function fill_field() {
 }
 
 function main() {
+    whites = [], blacks = [];
+    previous_act = {actor: 'black', destroyed_one: false};
+    selected_checker = null;
+
     create_field();
     fill_field();
     rules_on = true;
 }
+
 main();
