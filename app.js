@@ -7,6 +7,10 @@ let selected_checker;
 let whites, blacks;
 let previous_act;
 
+function random_int(from, to) {
+    return Math.floor(Math.random()* (to-from+1) )+1
+}
+
 function create_field() {
     let r = '';
     for (let i = 0; i < row_length; i++) {
@@ -68,7 +72,7 @@ function is_occupied(r,c) {
 Checker.prototype.become_damka = function() {
     this.is_damka = true;
     setTimeout( () => {
-        new Audio("vdamkah.mp3").play();
+        new Audio("vdamkah"+random_int(1,3)+".mp3").play();
         this.img.src = this.team+'_queen.png';
     }, 600);
 }
