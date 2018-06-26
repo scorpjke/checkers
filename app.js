@@ -78,6 +78,7 @@ Checker.prototype.become_damka = function() {
 }
 
 Checker.prototype.destroy = function() {
+    if (this.is_damka) new Audio("damka_off"+random_int(1,1)+".mp3").play();
     this.img.parentNode.removeChild(this.img);
     if (this.team == 'white') whites = whites.filter( e => e != this);
     if (this.team == 'black') blacks = blacks.filter( e => e != this);
@@ -123,7 +124,7 @@ Checker.prototype.pos = function(r, c) {
         previous_act.actor = this.team;
         if (whites.length == 0 || blacks.length == 0) {
             setTimeout( () => {
-                new Audio(this.team+"_win.mp3").play();
+                new Audio(this.team+"_win"+random_int(1,1)+".mp3").play();
                 //alert("The " + this.team + "s win. Buahahaha");
             }, 500);
         }
@@ -134,6 +135,7 @@ Checker.prototype.pos = function(r, c) {
     
     change_image_loc(this.img, r, c);
 
+    if (!this.is_damka)
     if (this.team == 'black' && r == row_length - 1
     || this.team == 'white' && r == 0)
         this.become_damka();
